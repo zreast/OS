@@ -53,7 +53,7 @@ int add(int num) {
 	else {
 		if (count == buffer_size) {
 			printf("Buffer OVERFLOW\n");
-            return 1;
+      return 1;
 		}
 		else {
 			current->next = temp;
@@ -66,7 +66,6 @@ int add(int num) {
 }
 
 int del() {
-
 	if (isEmpty()) {
 		printf("Buffer UNDERFLOW\n");
 		return 1;
@@ -80,7 +79,8 @@ int del() {
 		if (count == 0) {
 			head = NULL;
 			current = NULL;
-		}return 0;
+		}
+		return 0;
 	}
 }
 
@@ -161,7 +161,10 @@ int main(int argc, char *argv[]){
 	final=clock();
 	temp_cpu = ((double)final-(double)initial) / CLOCKS_PER_SEC ;
 
-	printf("Successfully consumed %d requests (%.2f)%%\n",request,(request/request)* 100);
+	for(int i=0;i<=600000000;i++){
+		producer++;
+	}
+	printf("\n\nSuccessfully consumed %d requests (%.2f)%%\n",request,(request/request)* 100);
 	printf("Elapsed Time: %.2f s\n",temp_cpu);
 	printf("Throughput: %.2f successful requests/s\n",request/temp_cpu);
 
