@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DEFECTS><DEFECT>
+    <SFA>
+      <FILEPATH>c:\users\millenium\documents\github\os\linklistcircular\linklistcircular\</FILEPATH>
+      <FILENAME>source.cpp</FILENAME>
+      <LINE>13</LINE>
+      <COLUMN>9</COLUMN>
+    </SFA>
+    <DEFECTCODE>6011</DEFECTCODE>
+    <DESCRIPTION>Dereferencing NULL pointer 'q'. </DESCRIPTION>
+    <FUNCTION>getNode</FUNCTION>
+    <DECORATED>?getNode@@YAPAUnode@@HPAU1@@Z</DECORATED>
+    <FUNCLINE>11</FUNCLINE>
+    <PROBABILITY>1</PROBABILITY>
+    <RANK>4</RANK>
+    <CATEGORY>
+      <RULECATEGORY>mspft</RULECATEGORY>
+    </CATEGORY>
+    <PATH>
+      <SFA>
+        <FILEPATH>c:\users\millenium\documents\github\os\linklistcircular\linklistcircular\</FILEPATH>
+        <FILENAME>source.cpp</FILENAME>
+        <LINE>12</LINE>
+        <COLUMN>5</COLUMN>
+        <KEYEVENT>
+          <ID>1</ID>
+          <KIND>declaration</KIND>
+          <IMPORTANCE>Essential</IMPORTANCE>
+          <MESSAGE>'q' may be NULL</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+      <SFA>
+        <FILEPATH>c:\users\millenium\documents\github\os\linklistcircular\linklistcircular\</FILEPATH>
+        <FILENAME>source.cpp</FILENAME>
+        <LINE>13</LINE>
+        <COLUMN>9</COLUMN>
+        <KEYEVENT>
+          <ID>2</ID>
+          <KIND>usage</KIND>
+          <IMPORTANCE>Essential</IMPORTANCE>
+          <MESSAGE>'q' is dereferenced, but may still be NULL</MESSAGE>
+        </KEYEVENT>
+      </SFA>
+    </PATH>
+  </DEFECT></DEFECTS>
