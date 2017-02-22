@@ -34,33 +34,31 @@ void *buffer_remove(void *vargp)
 
 int main(void)
 {
-  int i;
+  int i,producer,consumer,size,request;
   pthread_t tid;
-  printf("t35t mult1th23ad\n");
-  for(i=1;i<=20;i++)
+
+  scanf("%d %d %d %d",&producer,&consumer,&size,&request);
+  buffer_size = size;
+
+  for(i=1 ; i<=request ; i++)
   {
-    pthread_create(&tid , NULL , testThread , (void *)i);
+    if(cmd==0)
+    {
+      if(buffer_size > 1000)
+      {
+        // wait
+      }
+      pthread_create(&tid , NULL , buffer_append , (void *)i);
+    }
+    else
+    {
+      if(buffer_size == 0)
+      {
+        // wait
+      }
+      pthread_create(&tid , NULL , buffer_remove , (void *)i);
+    }
   }
 
-  //Using buffer
-/*
-  if(cmd==0)
-  {
-    if(buffer_size > 1000)
-    {
-      // wait
-    }
-    pthread_create(&tid , NULL , buffer_append , (void *)i);
-  }
-  else if(cmd==1 && buffer_size>0)
-  {
-    if(buffer_size == 0)
-    {
-      // wait
-    }
-    pthread_create(&tid , NULL , buffer_remove , (void *)i);
-  }
-*/
-  printf("Exit thread\n");
   return 0;
 }
