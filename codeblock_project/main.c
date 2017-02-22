@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<conio.h>
-#define max 1000
+#define max 3
 #include <pthread.h>
 #define NUM_THREADS	10
 //Global Variable
@@ -20,6 +20,10 @@ int isEmpty() {
 	return head == NULL;
 }
 
+int isFull() {
+	return count == max;
+}
+
 node* getNode(int num, node* nxt) {
 	node*q = (node*)malloc(sizeof(node));
 	q->data = num;
@@ -27,7 +31,7 @@ node* getNode(int num, node* nxt) {
 	return q;
 }
 
-void add(int num) {
+int add(int num) {
 	node *temp = (struct node*) malloc(sizeof(struct node));
 	temp->data = num;
 
@@ -36,24 +40,28 @@ void add(int num) {
 		head->next = head;
 		current = head;
 		count++;
+		return 0;
 	}
 	else {
 		if (count == max) {
 			printf("It full shit!\n");
+            return 1;
 		}
 		else {
 			current->next = temp;
 			temp->next = head;
 			current = temp;
 			count++;
+			return 0;
 		}
 	}
 }
 
-void del() {
+int del() {
 
 	if (isEmpty()) {
 		printf("Fucking it empty\n");
+		return 1;
 	}
 	else {
 		node* del = head;
@@ -64,12 +72,13 @@ void del() {
 		if (count == 0) {
 			head = NULL;
 			current = NULL;
-		}
+		}return 0;
 	}
 }
 
-void *buffer_append(void *vargp)
+void *buffer_append(void *vargp)  //add when not full
 {
+   while(isFull()==1){}
    pthread_mutex_lock(&lock);
    int tid;
    tid = (int)vargp;
@@ -81,6 +90,7 @@ void *buffer_append(void *vargp)
 
 void *buffer_remove(void *vargp)
 {
+   while(isEmpty()==1){}
    pthread_mutex_lock(&lock);
    int tid;
    tid = (int)vargp;
@@ -98,24 +108,20 @@ int main(void) {
         }
 
 
-	add(1);
-	add(2);
-	add(3);
-	add(4);
-	add(5);
-	add(6);
-	add(7);
-	add(8);
-	add(9);
-	add(10);
-
-
    pthread_t threads[NUM_THREADS];
    int rc;
    int t;
    for(t=0;t<NUM_THREADS;t++){
      printf("In main: creating thread %ld\n", t);
      rc = pthread_create(&threads[t], NULL, buffer_append, (void *)t);
+     if (rc){
+       printf("ERROR; return code from pthread_create() is %d\n", rc);
+       exit(-1);
+       }
+     }
+     for(t=NUM_THREADS;t<NUM_THREADS+10;t++){
+     printf("In main: creating thread %ld\n", t);
+     rc = pthread_create(&threads[t], NULL, buffer_remove, (void *)t);
      if (rc){
        printf("ERROR; return code from pthread_create() is %d\n", rc);
        exit(-1);
