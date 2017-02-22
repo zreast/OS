@@ -8,21 +8,27 @@ Computer Engineering KMITL
 #include <stdlib.h>
 #include <pthread.h>
 
-int buffer[1000],N;
+int buffer[1000],N,g;
 
 void *testThread(void *vargp)
 {
-  sleep(1);
-  printf("This is thread\n");
+  int id = (int)vargp;
+  static int s = 0;
+  s++; g++;
+
+  printf("Thread : %d Static: %d Global: %d\n",id,++s,++g);
   return NULL;
 }
 
 int main(void)
 {
+  int i;
   pthread_t tid;
-  printf("t35t th23ad\n");
-  pthread_create(&tid , NULL , testThread , NULL);
-  pthread_join(tid , NULL);
+  printf("t35t mult1th23ad\n");
+  for(i=1;i<=7;i++)
+  {
+    pthread_create(&tid , NULL , testThread , (void *)i);
+  }
   printf("Exit thread\n");
   return 0;
 }
