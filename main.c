@@ -12,11 +12,12 @@ int buffer[1000],N,g;
 
 void *testThread(void *vargp)
 {
+  char *str = (char*)vargp;
   int id = (int)vargp;
   static int s = 0;
   s++; g++;
 
-  printf("Thread : %d Static: %d Global: %d\n",id,++s,++g);
+  printf("test : %s Thread : %d Static: %d Global: %d\n",str,id,++s,++g);
   return NULL;
 }
 
