@@ -20,15 +20,15 @@ void *testThread(void *vargp)
   return NULL;
 }
 
-// void *append(void *vargp)
-// {
-//   return NULL;
-// }
-//
-// void *remove(void *vargp)
-// {
-//   return NULL;
-// }
+void *buffer_append(void *vargp)
+{
+  return NULL;
+}
+
+void *buffer_remove(void *vargp)
+{
+  return NULL;
+}
 
 
 int main(void)
@@ -36,7 +36,7 @@ int main(void)
   int i;
   pthread_t tid;
   printf("t35t mult1th23ad\n");
-  for(i=1;i<=7;i++)
+  for(i=1;i<=20;i++)
   {
     pthread_create(&tid , NULL , testThread , (void *)i);
   }
