@@ -8,7 +8,7 @@ Computer Engineering KMITL
 #include <stdlib.h>
 #include <pthread.h>
 
-int buffer[1000],N,g;
+int buffer[1010],buffer_size=0,g;
 
 void *testThread(void *vargp)
 {
@@ -41,6 +41,26 @@ int main(void)
   {
     pthread_create(&tid , NULL , testThread , (void *)i);
   }
+
+  //Using buffer
+/*
+  if(cmd==0)
+  {
+    if(buffer_size > 1000)
+    {
+      // wait
+    }
+    pthread_create(&tid , NULL , buffer_append , (void *)i);
+  }
+  else if(cmd==1 && buffer_size>0)
+  {
+    if(buffer_size == 0)
+    {
+      // wait
+    }
+    pthread_create(&tid , NULL , buffer_remove , (void *)i);
+  }
+*/
   printf("Exit thread\n");
   return 0;
 }
