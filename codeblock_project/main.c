@@ -12,7 +12,7 @@ struct node *current = NULL;
 int count = 0;
 
 //Input
-int producer,consumer,size,request;
+int producer,consumer,buffer_size,request;
 
 pthread_mutex_t lock;
 
@@ -106,13 +106,25 @@ void *buffer_remove(void *vargp)
    pthread_exit(NULL);
 }
 
-int main(void) {
-  if (pthread_mutex_init(&lock, NULL) != 0){
-      printf("\n mutex init failed\n");
-      return 1;
+int main(int argc, char *argv[]){
+	if(argc != 5){
+		printf("Parameter not correct\n");
+		return 1;
+	}
+	if (pthread_mutex_init(&lock, NULL) != 0){
+    printf("\n mutex init failed\n");
+    return 1;
   }
 
-	scanf("%d %d %d %d",&producer,&consumer,&size,&request);
+	// Assign from input
+	producer = atoi(argv[1]);
+	consumer = atoi(argv[2]);
+	buffer_size = atoi(argv[3]);
+	request = atoi(argv[4]);
+
+	printf("Producers %d, Consumers %d\n", producer,consumer);
+	printf("Buffer size %d\n", buffer_size);
+	printf("Requests %d\n", request);
 
   pthread_t threads[NUM_THREADS];
   int rc;
