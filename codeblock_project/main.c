@@ -1,8 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<conio.h>
 #include<time.h>
-#include <pthread.h>
+#include<pthread.h>
 
 //Global Variable
 struct node *head = NULL;
