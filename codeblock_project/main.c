@@ -1,10 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<conio.h>
+#include<time.h>
 #include <pthread.h>
-
-#define max 3
-#define NUM_THREADS	10
 
 //Global Variable
 struct node *head = NULL;
@@ -13,6 +11,10 @@ int count = 0;
 
 //Input
 int producer,consumer,buffer_size,request;
+
+//Time catcher
+clock_t initial,final;
+double temp_cpu;
 
 pthread_mutex_t lock;
 
@@ -27,7 +29,7 @@ int isEmpty() {
 }
 
 int isFull() {
-	return count == max;
+	return count == buffer_size;
 }
 
 node* getNode(int num, node* nxt) {
@@ -49,8 +51,8 @@ int add(int num) {
 		return 0;
 	}
 	else {
-		if (count == max) {
-			printf("It full shit!\n");
+		if (count == buffer_size) {
+			printf("Buffer OVERFLOW\n");
             return 1;
 		}
 		else {
@@ -66,7 +68,7 @@ int add(int num) {
 int del() {
 
 	if (isEmpty()) {
-		printf("Fucking it empty\n");
+		printf("Buffer UNDERFLOW\n");
 		return 1;
 	}
 	else {
@@ -88,7 +90,7 @@ void *buffer_append(void *vargp)  //add when not full
    pthread_mutex_lock(&lock);
    int tid;
    tid = (int)vargp;
-   printf("buffer append, thread #%d!\n", tid);
+   printf("Buffer append, thread #%d!\n", tid);
    add(tid);
    pthread_mutex_unlock(&lock);
    pthread_exit(NULL);
@@ -100,7 +102,7 @@ void *buffer_remove(void *vargp)
    pthread_mutex_lock(&lock);
    int tid;
    tid = (int)vargp;
-   printf("buffer remove, thread #%d!\n", tid);
+   printf("Buffer remove, thread #%d!\n", tid);
    del();
    pthread_mutex_unlock(&lock);
    pthread_exit(NULL);
@@ -112,7 +114,7 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 	if (pthread_mutex_init(&lock, NULL) != 0){
-    printf("\n mutex init failed\n");
+    printf("\n Mutex init failed\n");
     return 1;
   }
 
@@ -126,11 +128,14 @@ int main(int argc, char *argv[]){
 	printf("Buffer size %d\n", buffer_size);
 	printf("Requests %d\n", request);
 
-  pthread_t threads[NUM_THREADS];
+  pthread_t threads[producer];
   int rc;
   int t;
 
-  for(t=0;t<NUM_THREADS;t++){
+	//Start time
+	initial=clock();
+
+  for(t=0;t<producer;t++){
     printf("In main: creating thread %ld\n", t);
 
 		rc = pthread_create(&threads[t], NULL, buffer_append, (void *)t);
@@ -141,7 +146,7 @@ int main(int argc, char *argv[]){
     }
   }
 
-  for(t=NUM_THREADS;t<NUM_THREADS+10;t++){
+  for(t=producer;t<producer*2;t++){
 	  printf("In main: creating thread %ld\n", t);
 
 		rc = pthread_create(&threads[t], NULL, buffer_remove, (void *)t);
@@ -151,6 +156,14 @@ int main(int argc, char *argv[]){
 	    exit(-1);
 	  }
   }
+
+	//Stop time
+	final=clock();
+	temp_cpu = ((double)final-(double)initial) / CLOCKS_PER_SEC ;
+
+	printf("Successfully consumed %d requests (%.2f)%%\n",request,(request/request)* 100);
+	printf("Elapsed Time: %.2f s\n",temp_cpu);
+	printf("Throughput: %.2f successful requests/s\n",request/temp_cpu);
 
   /* Last thing that main() should do */
   pthread_exit(NULL);
