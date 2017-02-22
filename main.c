@@ -8,18 +8,11 @@ Computer Engineering KMITL
 #include <stdlib.h>
 #include <pthread.h>
 
-int buffer[1010],buffer_size=0,g;
+#define BUFFER_SIZE 1000
 
-void *testThread(void *vargp)
-{
-  char *str = (char*)vargp;
-  int id = (int)vargp;
-  static int s = 0;
-  s++; g++;
+int buffer[BUFFER_SIZE];
+int producer,consumer,size,request;
 
-  printf("test : %s Thread : %d Static: %d Global: %d\n",str,id,++s,++g);
-  return NULL;
-}
 
 void *buffer_append(void *vargp)
 {
@@ -34,7 +27,7 @@ void *buffer_remove(void *vargp)
 
 int main(void)
 {
-  int i,producer,consumer,size,request,cmd;
+  int i;
   pthread_t tid;
 
   scanf("%d %d %d %d",&producer,&consumer,&size,&request);
