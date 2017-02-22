@@ -164,7 +164,7 @@ int main(int argc, char *argv[]){
 	for(int i=0;i<=600000000;i++){
 		producer++;
 	}
-	printf("\n\nSuccessfully consumed %d requests (%.2f)%%\n",request,(request/request)* 100);
+	printf("\n\nSuccessfully consumed %d requests (%.2f%%)\n",request,(request/request)* 100);
 	printf("Elapsed Time: %.2f s\n",temp_cpu);
 	printf("Throughput: %.2f successful requests/s\n",request/temp_cpu);
 
