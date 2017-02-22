@@ -34,7 +34,7 @@ void *buffer_remove(void *vargp)
 
 int main(void)
 {
-  int i,producer,consumer,size,request;
+  int i,producer,consumer,size,request,cmd;
   pthread_t tid;
 
   scanf("%d %d %d %d",&producer,&consumer,&size,&request);
