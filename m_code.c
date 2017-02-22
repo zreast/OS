@@ -2,18 +2,18 @@
 #include<stdlib.h>
 #include<conio.h>
 #define max 1000
-#include<pthread.h>
 //Global Variable
 struct node *head = NULL;
 struct node *current = NULL;
 int count = 0;
-struct node
+
+typedef struct node
 {
 	int data;
 	struct node* next;
-};
+}node;
 
-bool isEmpty() {
+int isEmpty() {
 	return head == NULL;
 }
 
@@ -25,7 +25,7 @@ node* getNode(int num, node* nxt) {
 }
 
 void add(int num) {
-	struct node *temp = (struct node*) malloc(sizeof(struct node));
+	node *temp = (struct node*) malloc(sizeof(struct node));
 	temp->data = num;
 
 	if (isEmpty()) {
@@ -47,7 +47,7 @@ void add(int num) {
 	}
 }
 
-void remove() {
+void del() {
 
 	if (isEmpty()) {
 		printf("Fucking it empty\n");
@@ -77,16 +77,7 @@ int main(void) {
 	add(8);
 	add(9);
 	add(10);
-	remove();
-	remove();
-	remove();
-	remove();
-	remove();
-	remove();
-	remove();
-	remove();
-	remove();
-	remove();
+
 
 	//printf("%d", current->next->data);
 
