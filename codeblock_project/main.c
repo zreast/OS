@@ -1,13 +1,19 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<conio.h>
-#define max 3
 #include <pthread.h>
+
+#define max 3
 #define NUM_THREADS	10
+
 //Global Variable
 struct node *head = NULL;
 struct node *current = NULL;
 int count = 0;
+
+//Input
+int producer,consumer,size,request;
+
 pthread_mutex_t lock;
 
 typedef struct node
@@ -101,38 +107,43 @@ void *buffer_remove(void *vargp)
 }
 
 int main(void) {
-    if (pthread_mutex_init(&lock, NULL) != 0)
-        {
-            printf("\n mutex init failed\n");
-            return 1;
-        }
+  if (pthread_mutex_init(&lock, NULL) != 0){
+      printf("\n mutex init failed\n");
+      return 1;
+  }
 
+	scanf("%d %d %d %d",&producer,&consumer,&size,&request);
 
-   pthread_t threads[NUM_THREADS];
-   int rc;
-   int t;
-   for(t=0;t<NUM_THREADS;t++){
-     printf("In main: creating thread %ld\n", t);
-     rc = pthread_create(&threads[t], NULL, buffer_append, (void *)t);
-     if (rc){
-       printf("ERROR; return code from pthread_create() is %d\n", rc);
-       exit(-1);
-       }
-     }
-     for(t=NUM_THREADS;t<NUM_THREADS+10;t++){
-     printf("In main: creating thread %ld\n", t);
-     rc = pthread_create(&threads[t], NULL, buffer_remove, (void *)t);
-     if (rc){
-       printf("ERROR; return code from pthread_create() is %d\n", rc);
-       exit(-1);
-       }
-     }
+  pthread_t threads[NUM_THREADS];
+  int rc;
+  int t;
 
-   /* Last thing that main() should do */
-   pthread_exit(NULL);
-   return 0;
+  for(t=0;t<NUM_THREADS;t++){
+    printf("In main: creating thread %ld\n", t);
+
+		rc = pthread_create(&threads[t], NULL, buffer_append, (void *)t);
+
+		if (rc){
+      printf("ERROR; return code from pthread_create() is %d\n", rc);
+      exit(-1);
+    }
+  }
+
+  for(t=NUM_THREADS;t<NUM_THREADS+10;t++){
+	  printf("In main: creating thread %ld\n", t);
+
+		rc = pthread_create(&threads[t], NULL, buffer_remove, (void *)t);
+
+		if (rc){
+	    printf("ERROR; return code from pthread_create() is %d\n", rc);
+	    exit(-1);
+	  }
+  }
+
+  /* Last thing that main() should do */
+  pthread_exit(NULL);
+  return 0;
 
 	//printf("%d", current->next->data);
 
 }
-
