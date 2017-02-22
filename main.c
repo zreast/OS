@@ -20,6 +20,17 @@ void *testThread(void *vargp)
   return NULL;
 }
 
+// void *append(void *vargp)
+// {
+//   return NULL;
+// }
+//
+// void *remove(void *vargp)
+// {
+//   return NULL;
+// }
+
+
 int main(void)
 {
   int i;
