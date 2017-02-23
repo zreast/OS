@@ -260,6 +260,7 @@ int main(int argc, char *argv[]){
                 }
                 if(request<=0)break;
         }
+
          while(running_threads>0){
             Sleep(1);
             }
