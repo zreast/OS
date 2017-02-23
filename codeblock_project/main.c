@@ -112,11 +112,11 @@ void *buffer_append(void *vargp)  //add when not full
     pthread_mutex_unlock(&append_mutex);
     st = clock();
     srand(time(NULL)); //Get system time
-    timeout = (rand()*(int)vargp)%5+1; //Random time out 1-5 sec
+    timeout = (rand()*(int)vargp)%100+1; //Random time out 1-5 sec
 
     while(isFull()==1){
         en = clock();
-        diff = ((double)en-(double)st)/CLOCKS_PER_SEC;
+        diff = ((double)en-(double)st)/(CLOCKS_PER_SEC/1000);
         if((int)diff>=timeout){//Timeout
             //printf("thread %d cannot append it time out\n",(int)vargp);
             pthread_mutex_lock(&running_mutex);
@@ -154,10 +154,10 @@ void *buffer_remove(void *vargp)
     pthread_mutex_unlock(&remove_mutex);
     st = clock();
     srand(time(NULL));
-    timeout = (rand()*(int)vargp)%5+1;
+    timeout = (rand()*(int)vargp)%100+1;
    while(isEmpty()==1){
         en = clock();
-        diff = ((double)en-(double)st)/CLOCKS_PER_SEC;
+        diff = ((double)en-(double)st)/(CLOCKS_PER_SEC/1000);
         if((int)diff>=timeout){
             //printf("thread %d cannot remove it time out\n",(int)vargp);
             pthread_mutex_lock(&running_mutex);
