@@ -214,7 +214,7 @@ int main(int argc, char *argv[]){
 
     while(1){
 
-        for(i=0;i<producer;i++){
+        for(i=0;i<producer/2;i++){
                 if(temp_consumer_thread[i]==0){
                     pthread_create(&threads[i], NULL, buffer_append, (void *)i);
                     pthread_mutex_lock(&running_mutex);
@@ -226,7 +226,30 @@ int main(int argc, char *argv[]){
                 }
                 if(request<=0)break;
         }
-        for(j=producer;j<producer+consumer;j++){
+        for(j=producer;j<(producer+consumer)/2;j++){
+                if(temp_consumer_thread[i]==0){
+                    pthread_create(&threads[j], NULL, buffer_remove, (void *)j);
+                    pthread_mutex_lock(&running_mutex);
+                     running_threads++;
+                     request--;
+                    pthread_mutex_unlock(&running_mutex);
+                    temp_consumer_thread[j]=1;
+                }
+                if(request<=0)break;
+        }
+        for(i=producer/2;i<producer;i++){
+                if(temp_consumer_thread[i]==0){
+                    pthread_create(&threads[i], NULL, buffer_append, (void *)i);
+                    pthread_mutex_lock(&running_mutex);
+                     running_threads++;
+                     request--;
+                    pthread_mutex_unlock(&running_mutex);
+                    temp_producer_thread[i]=1;
+
+                }
+                if(request<=0)break;
+        }
+        for(j=(producer+consumer)/2;j<producer+consumer;j++){
                 if(temp_consumer_thread[i]==0){
                     pthread_create(&threads[j], NULL, buffer_remove, (void *)j);
                     pthread_mutex_lock(&running_mutex);
