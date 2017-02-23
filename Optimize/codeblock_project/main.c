@@ -315,7 +315,7 @@ int main(int argc, char *argv[]){
             Sleep(5);
             }
            if(request<=0)break;
-           printf("request is %d\n",request);
+           printf("\rrequest is %d",request);
     }
 
 	//Stop time
