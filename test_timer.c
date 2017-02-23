@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<conio.h>
-#define max 10
+#define max 3
 #include <pthread.h>
 #define NUM_THREADS	10
 #include <time.h>
@@ -132,10 +132,10 @@ void *buffer_remove(void *vargp)
 
 int main(void) {
 
-  //    add(1);
-  //  add(2);
-  //  add(3);add(4);add(5);
-  //  add(6);
+      add(1);
+    add(2);
+    add(3);add(4);add(5);
+    add(6);
 
     if (pthread_mutex_init(&lock, NULL) != 0)
         {
