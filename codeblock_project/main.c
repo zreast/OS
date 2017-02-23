@@ -210,36 +210,8 @@ int main(int argc, char *argv[]){
     srand(time(NULL));
 	//Start time
 	initial=clock();
-    /*for(i=0;i<request;i++)
-    {
-        if(rand()%2){
-            while(isProducerFull()){}
-            //printf("Append\n");
-            pthread_mutex_lock(&running_mutex);
-            running_threads++;
-            pthread_mutex_unlock(&running_mutex);
-            rc = pthread_create(&threads[append_count], NULL, buffer_append, (void *)append_count);
-
-            if (rc){
-              printf("ERROR; return code from pthread_create() is %d\n", rc);
-              exit(-1);
-            }
-        }
-        else{
-            while(isConsumerFull()){}
-            //printf("Remove\n");
-            pthread_mutex_lock(&running_mutex);
-            running_threads++;
-            pthread_mutex_unlock(&running_mutex);
-            rc = pthread_create(&threads[producer+remove_count], NULL, buffer_remove, (void *)remove_count);
-
-            if (rc){
-                printf("ERROR; return code from pthread_create() is %d\n", rc);
-                exit(-1);
-            }
-        }
-    }*/
     request_temp = request;
+
     while(1){
 
         for(i=0;i<producer;i++){
@@ -269,59 +241,15 @@ int main(int argc, char *argv[]){
             Sleep(1);
             }
            if(request<=0)break;
-           printf("request is %d\n",request);
+           //printf("request is %d\n",request);
     }
-
-   /* while(1){
-        for(i=0;i<producer;i++){
-            while(isProducerFull()){}
-                //printf("Append\n");
-                rc = pthread_create(&threads[i], NULL, buffer_append, (void *)append_count);
-
-                if (!rc){
-                  pthread_mutex_lock(&running_mutex);
-                  running_threads++;
-                  request--;
-                  pthread_mutex_unlock(&running_mutex);
-                }
-                else{
-                    printf("ERROR; return code from pthread_create() is %d\n", rc);
-                }
-        //
-        if(request==0)break;
-        }
-        for(j=producer;j<consumer+producer;j++){
-            while(isConsumerFull()){}
-                //printf("Remove\n");
-                rc = pthread_create(&threads[j], NULL, buffer_remove, (void *)remove_count);
-
-                if (!rc){
-                  pthread_mutex_lock(&running_mutex);
-                  running_threads++;
-                  request--;
-                  pthread_mutex_unlock(&running_mutex);
-                }
-                else{
-                    printf("ERROR; return code from pthread_create() is %d\n", rc);
-                }
-                if(request==0)break;
-        }
-        while(running_threads>0){
-        Sleep(1);
-        }
-       if(request==0)break;
-    }
-*/
-
 
 	//Stop time
 	final=clock();
 	temp_cpu = ((double)final-(double)initial) / CLOCKS_PER_SEC ;
 
-
-
 	//Outputs
-	printf("Error count = %d\n",error_count);
+	//printf("Error count = %d\n",error_count);
 	printf("\nSuccessfully consumed %d requests (%.2f%%)\n",request_temp-error_count,((double)(request_temp-error_count)/(double)request_temp)* 100);
 	printf("Elapsed Time: %.2f s\n",temp_cpu);
 	printf("Throughput: %.2f successful requests/s\n",(double)(request_temp-error_count)/temp_cpu);
@@ -330,6 +258,5 @@ int main(int argc, char *argv[]){
   pthread_exit(NULL);
   return 0;
 
-	//printf("%d", current->next->data);
 
 }
