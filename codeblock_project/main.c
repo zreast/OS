@@ -242,34 +242,45 @@ int main(int argc, char *argv[]){
             }
         }
     }*/
+    while(1){
+        for(i=0;i<producer;i++){
+            while(isProducerFull()){}
+                //printf("Append\n");
+                rc = pthread_create(&threads[append_count], NULL, buffer_append, (void *)append_count);
 
-    for(i=0;i<20;i++){
-        while(isProducerFull()){}
-            //printf("Append\n");
-            pthread_mutex_lock(&running_mutex);
-            running_threads++;
-            pthread_mutex_unlock(&running_mutex);
-            rc = pthread_create(&threads[append_count], NULL, buffer_append, (void *)append_count);
+                if (!rc){
+                  pthread_mutex_lock(&running_mutex);
+                  running_threads++;
+                  request--;
+                  pthread_mutex_unlock(&running_mutex);
+                }
+                else{
+                    printf("ERROR; return code from pthread_create() is %d\n", rc);
+                }
+        //
+        if(request==0)break;
+        }
+        for(i=producer;i<consumer+producer;i++){
+            while(isConsumerFull()){}
+                //printf("Remove\n");
+                pthread_mutex_lock(&running_mutex);
+                running_threads++;
+                pthread_mutex_unlock(&running_mutex);
+                rc = pthread_create(&threads[producer+remove_count], NULL, buffer_remove, (void *)remove_count);
 
-            if (rc){
-              printf("ERROR; return code from pthread_create() is %d\n", rc);
-              exit(-1);
-            }
+                if (!rc){
+                  pthread_mutex_lock(&running_mutex);
+                  running_threads++;
+                  request--;
+                  pthread_mutex_unlock(&running_mutex);
+                }
+                else{
+                    printf("ERROR; return code from pthread_create() is %d\n", rc);
+                }
+                if(request==0)break;
+        }
+       if(request==0)break;
     }
-    for(i=0;i<30;i++){
-        while(isConsumerFull()){}
-            //printf("Remove\n");
-            pthread_mutex_lock(&running_mutex);
-            running_threads++;
-            pthread_mutex_unlock(&running_mutex);
-            rc = pthread_create(&threads[producer+remove_count], NULL, buffer_remove, (void *)remove_count);
-
-            if (rc){
-                printf("ERROR; return code from pthread_create() is %d\n", rc);
-                exit(-1);
-            }
-    }
-
     while(running_threads>0){
         Sleep(1);
     }
