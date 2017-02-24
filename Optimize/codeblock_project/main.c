@@ -215,7 +215,7 @@ int main(int argc, char *argv[]){
     while(1){
 
         for(i=0;i<producer/4;i++){
-                if(temp_consumer_thread[i]==0){
+                if(temp_producer_thread[i]==0){
                     pthread_create(&threads[i], NULL, buffer_append, (void *)i);
                     pthread_mutex_lock(&running_mutex);
                      running_threads++;
@@ -239,7 +239,7 @@ int main(int argc, char *argv[]){
         }
         /////////////////////////////////////////////////////////////////////////////////
         for(i=producer/4;i<producer/2;i++){
-                if(temp_consumer_thread[i]==0){
+                if(temp_producer_thread[i]==0){
                     pthread_create(&threads[i], NULL, buffer_append, (void *)i);
                     pthread_mutex_lock(&running_mutex);
                      running_threads++;
@@ -264,7 +264,7 @@ int main(int argc, char *argv[]){
         ////////////////////////////dsfafadfsasdfds//////////////////
         ////////////////////////////asdfsasdsadsfdsdaafsd//////////
          for(i=producer/2;i<producer*3/4;i++){
-                if(temp_consumer_thread[i]==0){
+                if(temp_producer_thread[i]==0){
                     pthread_create(&threads[i], NULL, buffer_append, (void *)i);
                     pthread_mutex_lock(&running_mutex);
                      running_threads++;
@@ -288,7 +288,7 @@ int main(int argc, char *argv[]){
         }
         /////////////////////////////////////////////////////////////////////////////////
         for(i=producer*3/4;i<producer;i++){
-                if(temp_consumer_thread[i]==0){
+                if(temp_producer_thread[i]==0){
                     pthread_create(&threads[i], NULL, buffer_append, (void *)i);
                     pthread_mutex_lock(&running_mutex);
                      running_threads++;
