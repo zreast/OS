@@ -103,85 +103,107 @@ int del() {
 
 void *buffer_append(void *vargp)  //add when not full
 {
+
     clock_t st,en;
     double diff;
     int timeout;
-
+    do{
+    if(request<0)break;
     pthread_mutex_lock(&append_mutex);
     append_count++;
     pthread_mutex_unlock(&append_mutex);
     st = clock();
     //srand(time(NULL)); //Get system time
     //timeout = (rand()*(int)vargp)%100+1; //Random time out 1-5 sec
-		timeout = ((int)vargp)%10;
+		timeout = ((int)vargp)%100;
 
-    while(isFull()==1){
-        en = clock();
-        diff = ((double)en-(double)st)/(CLOCKS_PER_SEC/1000);
-        if((int)diff>=timeout){//Timeout
-            //printf("thread %d cannot append it time out\n",(int)vargp);
-            pthread_mutex_lock(&running_mutex);
-                error_count++;
-                running_threads--;
-            pthread_mutex_unlock(&running_mutex);
-            pthread_exit(NULL);
-        }
-   }
-
-   pthread_mutex_lock(&lock);
-   int tid;
-   tid = (int)vargp;
-   //printf("buffer append, thread #%d!\n", tid);
-   add(tid);
-   //pthread_mutex_lock(&append_mutex);
+    if(isFull()==1){
+            while(isFull()==1){
+            en = clock();
+            diff = ((double)en-(double)st)/(CLOCKS_PER_SEC/1000);
+            if((int)diff>=timeout){//Timeout
+                //printf("thread %d cannot append it time out\n",(int)vargp);
+                pthread_mutex_lock(&running_mutex);
+                    error_count++;
+                    request--;
+                pthread_mutex_unlock(&running_mutex);
+                break;
+            }
+       }
+    }
+    else{
+             pthread_mutex_lock(&lock);
+        int tid;
+        tid = (int)vargp;
+       //printf("buffer append, thread #%d!\n", tid);
+       if(request<0){
+        running_threads--;  pthread_mutex_unlock(&lock);   pthread_exit(NULL);
+       }
+        add(tid);
+       //pthread_mutex_lock(&append_mutex);
         append_count--;
-   //pthread_mutex_unlock(&append_mutex);
-   //pthread_mutex_lock(&running_mutex);
-        running_threads--;
-   //pthread_mutex_unlock(&running_mutex);
-   pthread_mutex_unlock(&lock);
-   temp_producer_thread[tid]=0;
+       //pthread_mutex_unlock(&append_mutex);
+       //pthread_mutex_lock(&running_mutex);
+       //pthread_mutex_unlock(&running_mutex);
+       request--;
+       pthread_mutex_unlock(&lock);
+       temp_producer_thread[tid]=0;
+    }
+
+    }while(request>0);
+    running_threads--;
    pthread_exit(NULL);
 }
 
 void *buffer_remove(void *vargp)
 {
+
     clock_t st,en;
     double diff;
     int timeout;
-
+    do{
+    if(request<0)break;
     pthread_mutex_lock(&remove_mutex);
     remove_count++;
     pthread_mutex_unlock(&remove_mutex);
     st = clock();
     //srand(time(NULL));
     //timeout = (rand()*(int)vargp)%100+1;
-		timeout=((int)vargp)%10;
-   while(isEmpty()==1){
+		timeout=((int)vargp)%100;
+    if(isEmpty()==1){
+        while(isEmpty()==1){
         en = clock();
         diff = ((double)en-(double)st)/(CLOCKS_PER_SEC/1000);
         if((int)diff>=timeout){
             //printf("thread %d cannot remove it time out\n",(int)vargp);
             pthread_mutex_lock(&running_mutex);
-                running_threads--;
                 error_count++;
+                request--;
             pthread_mutex_unlock(&running_mutex);
-            pthread_exit(NULL);
+            break;
         }
    }
-   pthread_mutex_lock(&lock);
+    }
+    else{
+     pthread_mutex_lock(&lock);
    int tid;
    tid = (int)vargp;
    //printf("buffer remove, thread #%d!\n", tid);
+       if(request<0){
+         running_threads--;  pthread_mutex_unlock(&lock);  pthread_exit(NULL);
+      }
    del();
     //pthread_mutex_lock(&remove_mutex);
        remove_count--;
     //pthread_mutex_unlock(&remove_mutex);
     //pthread_mutex_lock(&running_mutex);
-          running_threads--;
    //pthread_mutex_unlock(&running_mutex);
+      request--;
    pthread_mutex_unlock(&lock);
    temp_consumer_thread[tid]=0;
+    }
+   }while(request>0);
+   running_threads--;
    pthread_exit(NULL);
 }
 
@@ -214,6 +236,33 @@ int main(int argc, char *argv[]){
 	initial=clock();
     request_temp = request;
 
+    for(i=0;i<producer;i++){
+                if(temp_producer_thread[i]==0){
+                    pthread_create(&threads[i], NULL, buffer_append, (void *)i);
+                    pthread_mutex_lock(&running_mutex);
+                     running_threads++;
+                     //request--;
+                    pthread_mutex_unlock(&running_mutex);
+                    temp_producer_thread[i]=1;
+
+                }
+        }
+        for(j=producer;j<(producer+consumer);j++){
+                if(temp_consumer_thread[i]==0){
+                    pthread_create(&threads[j], NULL, buffer_remove, (void *)j);
+                    pthread_mutex_lock(&running_mutex);
+                     running_threads++;
+                     //request--;
+                    pthread_mutex_unlock(&running_mutex);
+                    temp_consumer_thread[j]=1;
+                }
+        }
+          while(request>0){
+            //Sleep(5);
+           printf("running thread is %d\n",running_threads);
+          printf("\rrequest is %d",request);
+       }
+    /*
     while(1){
 
         for(i=0;i<producer/4;i++){
@@ -312,14 +361,14 @@ int main(int argc, char *argv[]){
                 }
                 if(request<=0)break;
         }
-					/*
+
          while(running_threads>0){
             Sleep(5);
             }
-					*/
+
            if(request<=0)break;
            printf("request is %d\n",request);
-    }
+    }*/
 
 	//Stop time
 	final=clock();
