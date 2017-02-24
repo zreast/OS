@@ -115,7 +115,7 @@ void *buffer_append(void *vargp)  //add when not full
     st = clock();
     //srand(time(NULL)); //Get system time
     //timeout = (rand()*(int)vargp)%100+1; //Random time out 1-5 sec
-		timeout = ((int)vargp)%100;
+		timeout = ((int)vargp)%100+100;
 
     if(isFull()==1){
             while(isFull()==1){
@@ -169,7 +169,7 @@ void *buffer_remove(void *vargp)
     st = clock();
     //srand(time(NULL));
     //timeout = (rand()*(int)vargp)%100+1;
-		timeout=((int)vargp)%100;
+		timeout=((int)vargp)%100+100;
     if(isEmpty()==1){
         while(isEmpty()==1){
         en = clock();
