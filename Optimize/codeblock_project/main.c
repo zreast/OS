@@ -111,8 +111,9 @@ void *buffer_append(void *vargp)  //add when not full
     append_count++;
     pthread_mutex_unlock(&append_mutex);
     st = clock();
-    srand(time(NULL)); //Get system time
-    timeout = (rand()*(int)vargp)%100+1; //Random time out 1-5 sec
+    //srand(time(NULL)); //Get system time
+    //timeout = (rand()*(int)vargp)%100+1; //Random time out 1-5 sec
+		timeout = ((int)vargp)%10;
 
     while(isFull()==1){
         en = clock();
@@ -132,12 +133,12 @@ void *buffer_append(void *vargp)  //add when not full
    tid = (int)vargp;
    //printf("buffer append, thread #%d!\n", tid);
    add(tid);
-   pthread_mutex_lock(&append_mutex);
+   //pthread_mutex_lock(&append_mutex);
         append_count--;
-   pthread_mutex_unlock(&append_mutex);
-   pthread_mutex_lock(&running_mutex);
+   //pthread_mutex_unlock(&append_mutex);
+   //pthread_mutex_lock(&running_mutex);
         running_threads--;
-   pthread_mutex_unlock(&running_mutex);
+   //pthread_mutex_unlock(&running_mutex);
    pthread_mutex_unlock(&lock);
    temp_producer_thread[tid]=0;
    pthread_exit(NULL);
@@ -153,8 +154,9 @@ void *buffer_remove(void *vargp)
     remove_count++;
     pthread_mutex_unlock(&remove_mutex);
     st = clock();
-    srand(time(NULL));
-    timeout = (rand()*(int)vargp)%100+1;
+    //srand(time(NULL));
+    //timeout = (rand()*(int)vargp)%100+1;
+		timeout=((int)vargp)%10;
    while(isEmpty()==1){
         en = clock();
         diff = ((double)en-(double)st)/(CLOCKS_PER_SEC/1000);
@@ -172,12 +174,12 @@ void *buffer_remove(void *vargp)
    tid = (int)vargp;
    //printf("buffer remove, thread #%d!\n", tid);
    del();
-    pthread_mutex_lock(&remove_mutex);
+    //pthread_mutex_lock(&remove_mutex);
        remove_count--;
-    pthread_mutex_unlock(&remove_mutex);
-    pthread_mutex_lock(&running_mutex);
+    //pthread_mutex_unlock(&remove_mutex);
+    //pthread_mutex_lock(&running_mutex);
           running_threads--;
-   pthread_mutex_unlock(&running_mutex);
+   //pthread_mutex_unlock(&running_mutex);
    pthread_mutex_unlock(&lock);
    temp_consumer_thread[tid]=0;
    pthread_exit(NULL);
@@ -310,10 +312,11 @@ int main(int argc, char *argv[]){
                 }
                 if(request<=0)break;
         }
-
+					/*
          while(running_threads>0){
             Sleep(5);
             }
+					*/
            if(request<=0)break;
            printf("request is %d\n",request);
     }
