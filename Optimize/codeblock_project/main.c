@@ -258,7 +258,7 @@ int main(int argc, char *argv[]){
                 }
         }
           while(request>0){
-            Sleep(1);
+           // Sleep(1);
            //printf("running thread is %d\n",running_threads);
           //printf("\rrequest is %d",request);
        }
